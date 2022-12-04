@@ -1,2 +1,4 @@
+greenlet==2.0.1
 numpy==1.23.5
 paho-mqtt==1.6.1
+SQLAlchemy==1.4.44
