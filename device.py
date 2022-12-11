@@ -49,6 +49,7 @@ def on_message(client, userdata, msg):
 # ========================
 
 class Device:
+    mqtt_client = None
     def __init__(self, verbose_opt=False):
         self.verbose_opt = verbose_opt
         self.device_on = True
@@ -61,7 +62,7 @@ class Device:
         self.data_topic = (mqtt_settings.TOPICS['device_data']).format(device_id = self.device_id)
         self.feedback_topic = (mqtt_settings.TOPICS['device_feedback']).format(device_id = self.device_id)
         self.control_topic = (mqtt_settings.TOPICS['server_control']).format(device_id = self.device_id)
-        self.server_feedback_topic = (mqtt_settings.TOPICS['server_feedback']).format(device_id = self.device_id)        
+        # self.server_feedback_topic = (mqtt_settings.TOPICS['server_feedback']).format(device_id = self.device_id)        
 
     def __del__(self):
         self.device_on = False
@@ -86,12 +87,11 @@ class Device:
     #    self.mqtt_client.publish(self.lobby_topic, payload=json.dumps(msg), qos=0, retain=False)
 
     def set_on_off(self, state):
-        if self.verbose_opt: print(f"Device {state}")
+        if self.verbose_opt: print(f"Device {self.device_id}: {state}")
         self.relay_on = state
-        self.feedback( {'relay_on':state} )
 
     def feedback(self, msg):
-        self.mqtt_client.publish(self.feedback_topic, payload=json.dumps(msg), qos=0, retain=False)
+        self.mqtt_client.publish(self.feedback_topic, payload=json.dumps(msg, default = str), qos=0, retain=False)
 
     def register_power(self):
         registry = { 'ts': datetime.datetime.now(), 'pw':get_random_power() }
@@ -114,7 +114,10 @@ class Device:
 
         match payload['command']:
             case 'set_on_off':
-                self.set_on_off( payload['command']['value'] )
+                self.set_on_off( payload['value'] )
+        
+        comm_feedback = {'id':payload['id'], 'recv_ts': datetime.datetime.now()}
+        self.feedback(comm_feedback)
 
     def device_loop(self):
         while self.device_on:

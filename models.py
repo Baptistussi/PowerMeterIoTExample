@@ -33,10 +33,10 @@ class ControlEntry(Base):
     id = Column(Integer, primary_key=True)
     order_timestamp = Column(TIMESTAMP(timezone=False))
     feedback_timestamp = Column(TIMESTAMP(timezone=False), default=datetime.now())
+    command_type = Column(String)
     value = Column(String)
     result = Column(Boolean)
     device_id = Column(Integer, ForeignKey("devices.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)

@@ -3,7 +3,7 @@ from device import Device
 
 device_list = []
 
-for _ in range(1000):
+for _ in range(50):
     device_list.append( Device() )
     # start device loop:
     device_list[-1].start_mqtt_client()
