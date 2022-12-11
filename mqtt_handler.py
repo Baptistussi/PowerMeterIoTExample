@@ -130,13 +130,14 @@ class DeviceCommander(MqttHandler):
                     self.commands_expiration_queue.remove(command)
         # write the command to db
         recv_ts = data['recv_ts'] if not failure else None
+        result = not failure
 
         self.db_session.add( ControlEntry(
             order_timestamp = command_to_register['order_ts'],
             feedback_timestamp = recv_ts,
             command_type = command_to_register['command'],
             value = command_to_register['value'],
-            result = failure,
+            result = result,
             device_id = command_to_register['device_id']
         ) )
         self.db_session.commit()

@@ -2,13 +2,14 @@ import time
 import random
 import threading
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 from mqtt_handler import DeviceCommander
 from settings import DB_FILE
 
 engine = create_engine(f"sqlite:///{DB_FILE}")
-Session = sessionmaker(bind = engine)
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
 session = Session()
 
 handler = DeviceCommander(session, verbose_opt=False)
