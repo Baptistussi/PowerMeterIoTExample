@@ -9,3 +9,5 @@ TOPICS = {
     'server_control'    :   'IoTPM/s2d/control/{device_id}',
     #'server_feedback'   :   'IoTPM/s2d/feedback/{device_id}'
 }
+
+DB_FILE = "db/powermeter.sqlite?check_same_thread=False"

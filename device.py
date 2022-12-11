@@ -6,7 +6,7 @@ import random
 import datetime
 import paho.mqtt.client as mqtt
 
-import mqtt_settings
+import settings
 
 def get_random_id():
     return "-".join(['{:x}'.format(random.randint(0,255)) for _ in range(6)])
@@ -37,7 +37,7 @@ class LimitedList(list):
 def on_connect(client, userdata, flags, rc):
     print("connected")
     device = userdata['device']
-    topic = (mqtt_settings.TOPICS['server_control']).format(device_id = device.device_id)
+    topic = (settings.TOPICS['server_control']).format(device_id = device.device_id)
     client.subscribe(topic, qos=0)
 
 def on_message(client, userdata, msg):
@@ -58,10 +58,10 @@ class Device:
         self.device_id = get_random_id()
         self.sample_rate = 1
 
-        self.lobby_topic = mqtt_settings.TOPICS['devices_lobby']
-        self.data_topic = (mqtt_settings.TOPICS['device_data']).format(device_id = self.device_id)
-        self.feedback_topic = (mqtt_settings.TOPICS['device_feedback']).format(device_id = self.device_id)
-        self.control_topic = (mqtt_settings.TOPICS['server_control']).format(device_id = self.device_id)
+        self.lobby_topic = settings.TOPICS['devices_lobby']
+        self.data_topic = (settings.TOPICS['device_data']).format(device_id = self.device_id)
+        self.feedback_topic = (settings.TOPICS['device_feedback']).format(device_id = self.device_id)
+        self.control_topic = (settings.TOPICS['server_control']).format(device_id = self.device_id)
         # self.server_feedback_topic = (mqtt_settings.TOPICS['server_feedback']).format(device_id = self.device_id)        
 
     def __del__(self):
@@ -74,7 +74,7 @@ class Device:
         self.mqtt_client = mqtt.Client(userdata={'device':self})
         self.mqtt_client.on_connect = on_connect
         self.mqtt_client.on_message = on_message
-        self.mqtt_client.connect(mqtt_settings.BROKER, mqtt_settings.PORT, mqtt_settings.KEEP_ALIVE)
+        self.mqtt_client.connect(settings.BROKER, settings.PORT, settings.KEEP_ALIVE)
         self.mqtt_client.loop_start()
 
     def register_device(self):
@@ -91,6 +91,7 @@ class Device:
         self.relay_on = state
 
     def feedback(self, msg):
+        print(msg)
         self.mqtt_client.publish(self.feedback_topic, payload=json.dumps(msg, default = str), qos=0, retain=False)
 
     def register_power(self):

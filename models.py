@@ -3,7 +3,9 @@ from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine("sqlite:///powermeter.sqlite")
+from settings import DB_FILE
+
+engine = create_engine(f"sqlite:///{DB_FILE}")
 
 Base = declarative_base()
 
@@ -38,5 +40,4 @@ class ControlEntry(Base):
     result = Column(Boolean)
     device_id = Column(Integer, ForeignKey("devices.id"))
 
-if __name__ == '__main__':
-    Base.metadata.create_all(engine)
+Base.metadata.create_all(engine)
