@@ -1,6 +1,8 @@
 __pycache__/
 .venv/
 db/
+analysis/
 notes
 TODO
 powermeter.sqlite
+postgre_db_engine.py

@@ -5,9 +5,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 from mqtt_handler import DeviceCommander
-from settings import DB_FILE
+from settings import DB_ENGINE
 
-engine = create_engine(f"sqlite:///{DB_FILE}")
+engine = create_engine(DB_ENGINE)
 session_factory = sessionmaker(bind=engine)
 Session = scoped_session(session_factory)
 session = Session()
@@ -26,4 +26,7 @@ while True:
     if (time.time() - last_time) > (1./orders_p_s):
         last_time = time.time()
         device = random.choice( handler.device_list )
-        handler.send_command(device.device_id, "set_on_off", random.randint(0,4) % 2)
+        try:
+            handler.send_command(device.device_id, "set_on_off", random.randint(0,4) % 2)
+        except:
+            print("Fail")

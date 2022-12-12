@@ -1,3 +1,5 @@
+from postgre_db_engine import DB_ENGINE
+
 BROKER = "broker.hivemq.com"            
 PORT = 1883                           
 KEEP_ALIVE = 60
@@ -10,4 +12,5 @@ TOPICS = {
     #'server_feedback'   :   'IoTPM/s2d/feedback/{device_id}'
 }
 
-DB_FILE = "db/powermeter.sqlite?check_same_thread=False"
+# uncomment below to use sqlite
+# DB_ENGINE = "sqlite:///db/powermeter.sqlite?check_same_thread=False"

@@ -4,9 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from mqtt_handler import DeviceCommander
-from settings import DB_FILE
+from settings import DB_ENGINE
 
-engine = create_engine(f"sqlite:///{DB_FILE}")
+engine = create_engine(DB_ENGINE)
 Session = sessionmaker(bind = engine)
 session = Session()
 

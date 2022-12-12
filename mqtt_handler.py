@@ -77,7 +77,7 @@ class DataRegister(MqttHandler):
 
 class DeviceCommander(MqttHandler):
     MAX_COMMANDS = 10000
-    COMMAND_TIMEOUT = 60
+    COMMAND_TIMEOUT = 3
 
     @staticmethod
     def on_message(client, userdata, msg):
@@ -144,7 +144,9 @@ class DeviceCommander(MqttHandler):
 
     def check_expired_commands(self):
         "removes old commands from the front of the queue"
-        if len(self.commands_expiration_queue) == 0:
-            pass
-        elif ( datetime.datetime.now() - self.commands_expiration_queue[0][1] ).seconds > self.COMMAND_TIMEOUT:
-            self.register_command_feedback( command_id=self.commands_expiration_queue.pop(0)[0], failure=True )
+        while True:
+            if len(self.commands_expiration_queue) == 0:
+                pass
+            elif ( datetime.datetime.now() - self.commands_expiration_queue[0][1] ).seconds > self.COMMAND_TIMEOUT:
+                print('Command timeout.')
+                self.register_command_feedback( command_id=self.commands_expiration_queue.pop(0)[0], failure=True )
